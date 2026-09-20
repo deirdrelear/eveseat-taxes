@@ -71,13 +71,13 @@ Relevant fields:
 - `tax_receiver_id`
 - `tax`
 
-The initial candidate ratting ref types are configurable and default to:
+The legacy RAtaxes default ref types are:
 
 - `bounty_prizes`
-- `bounty_prize`
 - `ess_escrow_transfer`
+- `corporate_reward_payout`
 
-Formula parity work must confirm the exact subset and party semantics against RAtaxes production expectations before canonical calculation is enabled.
+They are configurable through `SEAT_TAXES_RATTING_REF_TYPES`.
 
 ## User/main mapping
 
@@ -129,4 +129,8 @@ No SDE files are bundled with this plugin.
 
 ## Prices
 
-SeAT `market_prices` is a current per-type snapshot. It is suitable as an input source for today's calculation but not as historical evidence. Phase 2 will copy every price actually used into `seat_taxes_price_snapshots`.
+SeAT `market_prices` is a current per-type snapshot. It includes ESI average/adjusted values and regional market-history statistics.
+
+The regional history `highest`/`lowest` fields are historical traded-price extrema, not live Jita buy/sell quotes. They cannot be substituted for the old RAtaxes Fuzzwork Jita buy/sell/split modes.
+
+Phase 2 snapshots every price actually used into `seat_taxes_price_snapshots`.

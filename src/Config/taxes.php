@@ -4,7 +4,7 @@ $rattingRefTypes = array_values(array_filter(array_map(
     'trim',
     explode(',', env(
         'SEAT_TAXES_RATTING_REF_TYPES',
-        'bounty_prizes,bounty_prize,ess_escrow_transfer'
+        'bounty_prizes,ess_escrow_transfer,corporate_reward_payout'
     ))
 )));
 
@@ -16,7 +16,8 @@ $walletDivisions = array_values(array_filter(array_map(
 return [
     /*
      * Canonical calculation remains disabled until formula parity with the
-     * existing RAtaxes implementation is covered by golden tests.
+     * existing RAtaxes implementation is covered by golden tests and tested
+     * against a real SeAT installation.
      */
     'calculation_enabled' => env('SEAT_TAXES_CALCULATION_ENABLED', false),
 
@@ -27,8 +28,8 @@ return [
     'daily_schedule' => env('SEAT_TAXES_DAILY_SCHEDULE', '30 1 * * *'),
 
     /*
-     * Corporation wallet journal sources used as candidate ratting facts.
-     * Exact accounting semantics are validated during formula-parity work.
+     * Legacy RAtaxes wallet ref types by default. Operators can explicitly
+     * override these without changing the compatibility calculation code.
      */
     'ratting_ref_types' => $rattingRefTypes,
     'wallet_divisions' => $walletDivisions,

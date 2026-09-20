@@ -33,11 +33,23 @@ return new class extends Migration
             $table->unsignedBigInteger('type_id')->nullable();
             $table->string('tax_class', 32);
             $table->decimal('quantity', 30, 4)->nullable();
+
+            // Legacy ore-refine state. Stored per fact so the carry chain is
+            // auditable and deterministic across daily calculations/rebuilds.
+            $table->bigInteger('opening_remainder')->nullable();
+            $table->bigInteger('refined_batches')->nullable();
+            $table->bigInteger('closing_remainder')->nullable();
+
+            // For ratting facts this snapshots the corporation tax rate used
+            // to reconstruct the character's gross income.
+            $table->decimal('corporation_tax_rate', 12, 6)->nullable();
+
             $table->decimal('gross_value', 30, 2)->default(0);
             $table->decimal('taxable_value', 30, 2)->default(0);
             $table->string('price_source', 32)->nullable();
             $table->decimal('price_value', 30, 8)->nullable();
             $table->decimal('refine_efficiency', 12, 6)->nullable();
+            $table->json('sde_snapshot')->nullable();
             $table->json('source_payload')->nullable();
             $table->timestamps();
 
@@ -45,6 +57,7 @@ return new class extends Migration
             $table->index(['tax_date', 'corporation_id']);
             $table->index(['tax_date', 'user_id']);
             $table->index(['tax_date', 'tax_class']);
+            $table->index(['character_id', 'type_id', 'tax_date'], 'seat_taxes_refine_carry_lookup');
         });
 
         Schema::create('seat_taxes_daily_results', function (Blueprint $table) {

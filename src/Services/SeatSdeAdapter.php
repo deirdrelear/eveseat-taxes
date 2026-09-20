@@ -2,6 +2,7 @@
 
 namespace DeirdreLear\Seat\Taxes\Services;
 
+use DeirdreLear\Seat\Taxes\Calculation\OreDefinition;
 use Seat\Eveapi\Models\Sde\InvType;
 
 class SeatSdeAdapter
@@ -25,6 +26,7 @@ class SeatSdeAdapter
                 ? (int) $type->group->categoryID
                 : null,
             'portion_size' => (int) $type->portionSize,
+            'published' => (bool) $type->published,
             'materials' => $type->materials->map(function ($material) {
                 return [
                     'type_id' => (int) $material->typeID,
@@ -33,5 +35,28 @@ class SeatSdeAdapter
                 ];
             })->values()->all(),
         ];
+    }
+
+    public function oreDefinition(int $typeId): ?OreDefinition
+    {
+        $type = $this->describeType($typeId);
+
+        if (! $type || $type['category_id'] === null) {
+            return null;
+        }
+
+        $materials = [];
+        foreach ($type['materials'] as $material) {
+            $materials[$material['type_id']] = $material['quantity'];
+        }
+
+        return new OreDefinition(
+            typeId: $type['type_id'],
+            categoryId: $type['category_id'],
+            groupId: $type['group_id'],
+            portionSize: $type['portion_size'],
+            materials: $materials,
+            published: $type['published'],
+        );
     }
 }

@@ -23,17 +23,23 @@ No taxes are written in this phase.
 
 ## Phase 2 - calculation parity
 
-- [ ] port RAtaxes tax formulas;
-- [ ] implement price snapshots;
+- [x] port legacy ore/refine/tax calculation into a pure compatibility core;
+- [x] port legacy ratting calculation into a pure compatibility core;
+- [x] reproduce .NET midpoint-to-even rounding;
+- [x] preserve/document the legacy sub-portion remainder quirk;
+- [x] golden compatibility fixtures runnable without a SeAT install;
+- [x] bind SeAT SDE types/materials to the pure ore definition;
+- [ ] implement SeAT price adapter + immutable price snapshots;
 - [ ] implement tax rule sets and activation;
-- [ ] golden fixtures proving parity with known RAtaxes reports;
-- [ ] manual single-day calculation command.
+- [ ] build normalized daily facts from read-only source records;
+- [ ] manual single-day dry-run calculation command;
+- [ ] integration-test formula parity against known RAtaxes production samples.
 
 ## Phase 3 - daily canonical ledger
 
 - [ ] idempotent daily calculation job;
 - [ ] scheduler entry;
-- [ ] late-data detection and controlled day rebuild;
+- [ ] late-data detection and controlled forward rebuild of refine carry chains;
 - [ ] current-period and historical reports.
 
 ## Phase 4 - historical recalculation
