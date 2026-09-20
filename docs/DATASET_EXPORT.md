@@ -4,7 +4,54 @@ The exporter creates a **sanitized, scoped dataset** from a production SeAT data
 
 It deliberately does **not** create a full database dump.
 
-## Command
+There are two ways to run it:
+
+1. an Artisan command when the development plugin is already installed;
+2. a standalone wrapper which does **not** install/register the plugin in production.
+
+For a production SeAT, the standalone wrapper is the preferred first test.
+
+## Standalone production export
+
+Clone or copy this repository to the SeAT host. It does not need to be inside
+`/var/www/seat`.
+
+Example:
+
+```bash
+cd /opt
+git clone -b feat/initial-plugin-scaffold \
+  https://github.com/deirdrelear/eveseat-taxes.git
+
+cd /opt/eveseat-taxes
+
+php tools/export-dataset.php \
+  --seat-root=/var/www/seat \
+  --from=2026-07-01 \
+  --to=2026-09-19 \
+  --alliance=99001234 \
+  --holding-corp=98001234 \
+  --mineral-region=10000025
+```
+
+The wrapper only bootstraps the existing SeAT Laravel application so it can
+reuse the configured database connection. It does not register the plugin,
+run migrations, seed schedules or write to SeAT tables.
+
+Run it as the same user that normally owns/runs SeAT files if permissions
+require it, for example:
+
+```bash
+sudo -H -u www-data php tools/export-dataset.php \
+  --seat-root=/var/www/seat \
+  --from=2026-07-01 \
+  --to=2026-09-19 \
+  --alliance=99001234
+```
+
+## Artisan command
+
+If the plugin branch is already installed:
 
 ```bash
 php artisan taxes:dataset:export FROM TO \
@@ -28,8 +75,14 @@ Options may be repeated:
 --mineral-region=10000025 --mineral-region=10000014
 ```
 
-By default wallet rows are restricted to the ref types configured in
-`taxes.ratting_ref_types`. They can be overridden explicitly:
+By default wallet rows are restricted to the legacy RAtaxes ref types:
+
+- `bounty_prizes`
+- `ess_escrow_transfer`
+- `corporate_reward_payout`
+
+With the Artisan command those defaults come from `taxes.ratting_ref_types`.
+They can be overridden explicitly:
 
 ```bash
 --wallet-ref-type=bounty_prizes \
@@ -39,7 +92,8 @@ By default wallet rows are restricted to the ref types configured in
 
 ## Default output
 
-Without `--output`, a new private directory is created under:
+Without `--output`, a new private directory is created under the SeAT
+installation's:
 
 ```text
 storage/app/seat-taxes-datasets/
