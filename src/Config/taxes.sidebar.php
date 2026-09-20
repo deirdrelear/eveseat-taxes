@@ -12,6 +12,12 @@ return [
                 'route' => 'taxes.dashboard',
                 'permission' => 'taxes.view',
             ],
+            'diagnostics' => [
+                'name' => 'Diagnostics',
+                'icon' => 'fas fa-stethoscope',
+                'route' => 'taxes.diagnostics',
+                'permission' => 'taxes.view',
+            ],
         ],
     ],
 ];

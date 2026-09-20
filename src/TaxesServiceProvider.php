@@ -2,8 +2,8 @@
 
 namespace DeirdreLear\Seat\Taxes;
 
+use DeirdreLear\Seat\Taxes\Commands\TaxesDiagnostics;
 use DeirdreLear\Seat\Taxes\database\seeders\ScheduleSeeder;
-use Illuminate\Support\Facades\Route;
 use Seat\Services\AbstractSeatPlugin;
 
 class TaxesServiceProvider extends AbstractSeatPlugin
@@ -13,6 +13,7 @@ class TaxesServiceProvider extends AbstractSeatPlugin
         $this->addRoutes();
         $this->addViews();
         $this->addMigrations();
+        $this->addCommands();
     }
 
     public function register(): void
@@ -43,6 +44,13 @@ class TaxesServiceProvider extends AbstractSeatPlugin
     private function addMigrations(): void
     {
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+    }
+
+    private function addCommands(): void
+    {
+        $this->commands([
+            TaxesDiagnostics::class,
+        ]);
     }
 
     public function getName(): string

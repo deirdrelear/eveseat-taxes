@@ -12,4 +12,10 @@ Route::group([
         'uses' => 'DashboardController@index',
         'middleware' => 'can:taxes.view',
     ]);
+
+    Route::get('/diagnostics', [
+        'as' => 'taxes.diagnostics',
+        'uses' => 'DiagnosticsController@index',
+        'middleware' => 'can:taxes.view',
+    ]);
 });

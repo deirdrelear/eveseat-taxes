@@ -23,12 +23,14 @@ SeAT DB
   |-- corporation_industry_mining_observer_data
   |-- character_minings
   |-- corporation_wallet_journals
-  |-- users / refresh_tokens / affiliations
+  |-- refresh_tokens / users
+  |-- character_corporation_histories
+  |-- corporation_alliance_histories
   |-- market_prices
-  |-- invTypes / invGroups / invTypeMaterials / other SeAT SDE tables
+  |-- invTypes / invGroups / invTypeMaterials
   |
   v
-Fact resolvers
+Read-only fact + ownership + SDE resolvers
   |
   v
 seat_taxes_daily_facts + seat_taxes_price_snapshots
@@ -42,6 +44,16 @@ seat_taxes_daily_results
   +-- Recalculation engine -> scenario results / delta
 ```
 
+## Historical ownership
+
+Moon observer data contains `recorded_corporation_id`; that is the preferred event-time corporation.
+
+For sources that only provide a character, the plugin resolves the newest `character_corporation_histories` record whose `start_date` is not later than the event. Alliance ownership is resolved the same way from `corporation_alliance_histories`.
+
+Current affiliation tables are fallback data only and the fallback basis must be recorded in the immutable accounting snapshot.
+
+Character mining is a special case: the ESI source is daily, while SeAT's stored time is the time at which a quantity delta was observed. A same-day corporation transition can therefore be ambiguous and must be surfaced in diagnostics.
+
 ## Canonical calculation
 
 A scheduled job will calculate a closed UTC day after SeAT has had time to ingest the final ESI data. The exact schedule is configurable; the initial scaffold deliberately does not enable the job.
@@ -53,14 +65,6 @@ The calculation must be idempotent. Source records need deterministic `source_ke
 ### Rate-only
 
 Use the stored `taxable_value` and change only tax rates. This should be cheap even over years of history.
-
-Example:
-
-```
-old = taxable_value * 0.20
-new = taxable_value * 0.10
-delta = new - old
-```
 
 ### Full replay
 
@@ -81,8 +85,8 @@ Full replay should use immutable plugin snapshots when possible. Reading old SeA
 - exact refine rounding policy matching RAtaxes;
 - price source mapping;
 - ratting gross-income derivation;
-- event-time main/user/corporation attribution;
+- main/user attribution policy;
 - handling of corrections arriving from ESI after a day was closed;
 - canonical rule-set activation workflow.
 
-These should be backed by golden tests copied from known RAtaxes calculations before enabling scheduled calculations.
+These must be backed by golden tests copied from known RAtaxes calculations before enabling scheduled calculations.
