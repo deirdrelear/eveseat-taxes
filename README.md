@@ -50,7 +50,23 @@ php artisan taxes:dry-run 2026-09-19
 php artisan taxes:dry-run 2026-09-19 --details --limit=100
 ```
 
-See [Testing](docs/TESTING.md) before using real SeAT data.
+## Sanitized production dataset export
+
+A production SeAT can export a limited test dataset without OAuth/access tokens, passwords or email addresses:
+
+```bash
+php artisan taxes:dataset:export 2026-07-01 2026-09-19 \
+  --alliance=123456789 \
+  --holding-corp=987654321 \
+  --mineral-region=10000025
+```
+
+The exporter writes compressed JSONL files plus `manifest.json` under
+`storage/app/seat-taxes-datasets/` by default.
+
+It still contains wallet and mining history and must be treated as confidential.
+
+See [Production test-dataset export](docs/DATASET_EXPORT.md).
 
 ## Calculation compatibility
 
@@ -74,6 +90,7 @@ See:
 - [Data model](docs/DATA_MODEL.md)
 - [SeAT source mapping](docs/SOURCE_MAPPING.md)
 - [RAtaxes calculation parity](docs/CALCULATION_PARITY.md)
+- [Production test-dataset export](docs/DATASET_EXPORT.md)
 - [Testing](docs/TESTING.md)
 - [Roadmap](docs/ROADMAP.md)
 

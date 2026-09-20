@@ -3,6 +3,7 @@
 namespace DeirdreLear\Seat\Taxes;
 
 use DeirdreLear\Seat\Taxes\Commands\CreateLegacyRuleSet;
+use DeirdreLear\Seat\Taxes\Commands\ExportDataset;
 use DeirdreLear\Seat\Taxes\Commands\TaxesDiagnostics;
 use DeirdreLear\Seat\Taxes\Commands\TaxesDryRun;
 use DeirdreLear\Seat\Taxes\database\seeders\ScheduleSeeder;
@@ -54,6 +55,7 @@ class TaxesServiceProvider extends AbstractSeatPlugin
             TaxesDiagnostics::class,
             TaxesDryRun::class,
             CreateLegacyRuleSet::class,
+            ExportDataset::class,
         ]);
     }
 

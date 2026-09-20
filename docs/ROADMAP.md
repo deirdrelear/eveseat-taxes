@@ -18,6 +18,8 @@
 - [x] historical user/main/corporation/alliance ownership resolver;
 - [x] read-only diagnostics page;
 - [x] `taxes:diagnostics` CLI command;
+- [x] sanitized scoped production dataset exporter;
+- [ ] collision-safe dataset importer for a separate test SeAT;
 - [ ] integration-test the resolvers against a real SeAT installation.
 
 No taxes are written in this phase.
