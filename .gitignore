@@ -1,0 +1,10 @@
+/vendor/
+.env
+.env.*
+!.env.example
+/.idea/
+/.vscode/
+.phpunit.result.cache
+.php-cs-fixer.cache
+.DS_Store
+Thumbs.db
