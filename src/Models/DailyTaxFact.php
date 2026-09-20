@@ -2,9 +2,10 @@
 
 namespace DeirdreLear\Seat\Taxes\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Seat\Services\Models\ExtensibleModel;
 
-class DailyTaxFact extends Model
+class DailyTaxFact extends ExtensibleModel
 {
     protected $table = 'seat_taxes_daily_facts';
 
@@ -24,4 +25,9 @@ class DailyTaxFact extends Model
         'sde_snapshot' => 'array',
         'source_payload' => 'array',
     ];
+
+    public function results(): HasMany
+    {
+        return $this->hasMany(DailyTaxResult::class, 'daily_fact_id');
+    }
 }

@@ -2,9 +2,10 @@
 
 namespace DeirdreLear\Seat\Taxes\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Seat\Services\Models\ExtensibleModel;
 
-class RecalculationRun extends Model
+class RecalculationRun extends ExtensibleModel
 {
     protected $table = 'seat_taxes_recalculation_runs';
 
@@ -17,4 +18,9 @@ class RecalculationRun extends Model
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
     ];
+
+    public function results(): HasMany
+    {
+        return $this->hasMany(RecalculationResult::class, 'run_id');
+    }
 }

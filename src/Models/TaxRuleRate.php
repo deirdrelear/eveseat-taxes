@@ -2,10 +2,10 @@
 
 namespace DeirdreLear\Seat\Taxes\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Seat\Services\Models\ExtensibleModel;
 
-class TaxRuleRate extends Model
+class TaxRuleRate extends ExtensibleModel
 {
     protected $table = 'seat_taxes_rule_rates';
 

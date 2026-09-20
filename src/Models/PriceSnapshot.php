@@ -2,9 +2,9 @@
 
 namespace DeirdreLear\Seat\Taxes\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
-class PriceSnapshot extends Model
+class PriceSnapshot extends ExtensibleModel
 {
     protected $table = 'seat_taxes_price_snapshots';
 

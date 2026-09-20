@@ -2,9 +2,10 @@
 
 namespace DeirdreLear\Seat\Taxes\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Seat\Services\Models\ExtensibleModel;
 
-class RecalculationResult extends Model
+class RecalculationResult extends ExtensibleModel
 {
     protected $table = 'seat_taxes_recalculation_results';
 
@@ -16,4 +17,9 @@ class RecalculationResult extends Model
         'recalculated_tax' => 'decimal:2',
         'delta' => 'decimal:2',
     ];
+
+    public function run(): BelongsTo
+    {
+        return $this->belongsTo(RecalculationRun::class, 'run_id');
+    }
 }
