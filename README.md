@@ -2,7 +2,7 @@
 
 Native SeAT plugin for daily EVE Online tax calculation, historical recalculation and reporting.
 
-> **Status:** read-only SeAT source resolution and the pure RAtaxes-compatible calculation core are implemented. Canonical tax writes remain disabled.
+> **Status:** read-only SeAT source resolution, versioned rule scope and an RAtaxes-compatible dry-run calculation core are implemented. Canonical tax writes remain disabled.
 
 ## Goals
 
@@ -18,11 +18,12 @@ Native SeAT plugin for daily EVE Online tax calculation, historical recalculatio
 
 - moon mining: `corporation_industry_mining_observer_data`;
 - character mining: `character_minings`;
-- ratting: configured `corporation_wallet_journals` ref types;
+- ratting: configured `corporation_wallet_journals` ref types with `second_party=character`;
 - historical character corporation membership: `character_corporation_histories`;
 - historical corporation alliance membership: `corporation_alliance_histories`;
 - account/main mapping: `refresh_tokens` + `users`;
-- SDE: `invTypes`, `invGroups`, `invTypeMaterials`.
+- SDE: `invTypes`, `invGroups`, `invTypeMaterials`, `solar_systems`;
+- native price source: SeAT `market_prices.average_price`.
 
 Run source diagnostics without writing tax data:
 
@@ -31,7 +32,25 @@ php artisan taxes:diagnostics
 php artisan taxes:diagnostics 2026-09-19
 ```
 
-The same report is available from **Taxes -> Diagnostics** in the SeAT UI.
+## Compatibility rule set and dry-run
+
+Create an explicit legacy-compatible rule set before calculating anything:
+
+```bash
+php artisan taxes:rules:create-legacy 2026-09-01 \
+  --alliance=123456789 \
+  --mining-holding-corp=987654321 \
+  --mineral-region=10000025
+```
+
+Then calculate one UTC day without writing tax data:
+
+```bash
+php artisan taxes:dry-run 2026-09-19
+php artisan taxes:dry-run 2026-09-19 --details --limit=100
+```
+
+See [Testing](docs/TESTING.md) before using real SeAT data.
 
 ## Calculation compatibility
 
@@ -55,6 +74,7 @@ See:
 - [Data model](docs/DATA_MODEL.md)
 - [SeAT source mapping](docs/SOURCE_MAPPING.md)
 - [RAtaxes calculation parity](docs/CALCULATION_PARITY.md)
+- [Testing](docs/TESTING.md)
 - [Roadmap](docs/ROADMAP.md)
 
 ## Compatibility target

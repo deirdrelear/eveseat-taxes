@@ -13,6 +13,7 @@
 - [x] Moon mining resolver from `corporation_industry_mining_observer_data`;
 - [x] character mining resolver from `character_minings`;
 - [x] ratting resolver from `corporation_wallet_journals`;
+- [x] exact legacy wallet filter: division + ref type + second party category character;
 - [x] SeAT SDE adapter for type/material/group data;
 - [x] historical user/main/corporation/alliance ownership resolver;
 - [x] read-only diagnostics page;
@@ -29,10 +30,12 @@ No taxes are written in this phase.
 - [x] preserve/document the legacy sub-portion remainder quirk;
 - [x] golden compatibility fixtures runnable without a SeAT install;
 - [x] bind SeAT SDE types/materials to the pure ore definition;
-- [ ] implement SeAT price adapter + immutable price snapshots;
-- [ ] implement tax rule sets and activation;
-- [ ] build normalized daily facts from read-only source records;
-- [ ] manual single-day dry-run calculation command;
+- [x] native SeAT EVE-average price resolver;
+- [x] versioned scope/rate rule service;
+- [x] explicit legacy-compatible rule-set creation command;
+- [x] manual single-day dry-run calculation command;
+- [ ] immutable price snapshots during canonical calculation;
+- [ ] normalized daily fact writer;
 - [ ] integration-test formula parity against known RAtaxes production samples.
 
 ## Phase 3 - daily canonical ledger

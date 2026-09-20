@@ -2,7 +2,9 @@
 
 namespace DeirdreLear\Seat\Taxes;
 
+use DeirdreLear\Seat\Taxes\Commands\CreateLegacyRuleSet;
 use DeirdreLear\Seat\Taxes\Commands\TaxesDiagnostics;
+use DeirdreLear\Seat\Taxes\Commands\TaxesDryRun;
 use DeirdreLear\Seat\Taxes\database\seeders\ScheduleSeeder;
 use Seat\Services\AbstractSeatPlugin;
 
@@ -50,6 +52,8 @@ class TaxesServiceProvider extends AbstractSeatPlugin
     {
         $this->commands([
             TaxesDiagnostics::class,
+            TaxesDryRun::class,
+            CreateLegacyRuleSet::class,
         ]);
     }
 

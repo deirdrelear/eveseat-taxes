@@ -23,9 +23,11 @@ class DiagnosticsService
         'corporation_infos',
         'refresh_tokens',
         'users',
+        'universe_names',
         'invTypes',
         'invGroups',
         'invTypeMaterials',
+        'solar_systems',
         'market_prices',
     ];
 
@@ -122,6 +124,16 @@ class DiagnosticsService
             ->distinct()
             ->count('m.type_id');
 
+        $walletCandidatesWithoutPartyName = DB::table('corporation_wallet_journals as j')
+            ->leftJoin('universe_names as u', 'u.entity_id', '=', 'j.second_party_id')
+            ->whereBetween('j.date', [$start, $end])
+            ->whereIn('j.division', config('taxes.wallet_divisions', [1]))
+            ->whereIn('j.ref_type', config('taxes.ratting_ref_types', []))
+            ->whereNotNull('j.second_party_id')
+            ->whereNull('u.entity_id')
+            ->distinct()
+            ->count('j.second_party_id');
+
         return [
             'missing_moon_sde_types' => $missingMoonTypes,
             'missing_character_mining_sde_types' => $missingCharacterMiningTypes,
@@ -129,6 +141,7 @@ class DiagnosticsService
             'unmapped_character_mining_characters' => $unmappedCharacterMiningCharacters,
             'character_mining_without_historical_corporation' => $characterMiningWithoutHistoricalCorp,
             'character_mining_raw_types_without_current_price' => $rawTypesWithoutCurrentPrice,
+            'wallet_candidates_without_universe_name' => $walletCandidatesWithoutPartyName,
         ];
     }
 }
