@@ -1,0 +1,32 @@
+{
+  "name": "deirdrelear/eveseat-taxes",
+  "description": "SeAT plugin for daily EVE Online tax calculation, historical recalculation and reporting",
+  "type": "seat-plugin",
+  "license": "GPL-2.0-only",
+  "authors": [
+    {
+      "name": "deirdrelear"
+    }
+  ],
+  "require": {
+    "php": "^8.1",
+    "eveseat/services": "^5.0.1",
+    "eveseat/eveapi": "^5.0.1",
+    "eveseat/web": "^5.0.1",
+    "laravel/framework": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "DeirdreLear\\Seat\\Taxes\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "DeirdreLear\\Seat\\Taxes\\TaxesServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
