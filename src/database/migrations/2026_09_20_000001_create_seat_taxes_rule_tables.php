@@ -16,9 +16,11 @@ return new class extends Migration
             $table->decimal('refine_efficiency', 12, 6)->default(0.906300);
             $table->string('price_source')->default('eve_average');
             $table->json('settings')->nullable();
+            $table->unsignedBigInteger('created_by_user_id')->nullable();
             $table->timestamps();
 
             $table->index(['effective_from', 'effective_to']);
+            $table->index('created_by_user_id');
         });
 
         Schema::create('seat_taxes_rule_rates', function (Blueprint $table) {

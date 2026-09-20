@@ -3,11 +3,8 @@
 namespace DeirdreLear\Seat\Taxes\Commands;
 
 use Carbon\CarbonImmutable;
-use DeirdreLear\Seat\Taxes\Calculation\TaxClass;
-use DeirdreLear\Seat\Taxes\Models\TaxRuleSet;
 use DeirdreLear\Seat\Taxes\Services\RuleSetService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class CreateLegacyRuleSet extends Command
@@ -31,68 +28,25 @@ class CreateLegacyRuleSet extends Command
             $toOption = $this->option('effective-to');
             $to = $toOption ? $this->parseDate((string) $toOption) : null;
 
-            if ($to !== null && $to->lt($from)) {
-                $this->error('effective-to must not be earlier than effective_from.');
-
-                return self::FAILURE;
-            }
-
-            $alliances = $this->ids($this->option('alliance'));
-            if ($alliances === []) {
-                $this->error('At least one --alliance=<id> is required.');
-
-                return self::FAILURE;
-            }
-
-            if ($rules->overlaps($from, $to)) {
-                $this->error('The requested effective period overlaps an existing tax rule set.');
-
-                return self::FAILURE;
-            }
-
             $settings = [
-                'alliance_ids' => $alliances,
+                'alliance_ids' => $this->ids($this->option('alliance')),
                 'excluded_corporation_ids' => $this->ids($this->option('exclude-corp')),
                 'wallet_excluded_corporation_ids' => $this->ids($this->option('wallet-exclude-corp')),
                 'mineral_region_ids' => $this->ids($this->option('mineral-region')),
                 'mining_holding_corporation_ids' => $this->ids($this->option('mining-holding-corp')),
-                'compatibility_profile' => 'RAtaxes',
-                'compatibility_note' => 'Legacy rates/formulas; EVE average is the native SeAT price source.',
             ];
 
-            $ruleSet = DB::transaction(function () use ($from, $to, $settings) {
-                $ruleSet = TaxRuleSet::create([
-                    'name' => (string) $this->option('name'),
-                    'effective_from' => $from->toDateString(),
-                    'effective_to' => $to?->toDateString(),
-                    'refine_efficiency' => 0.906300,
-                    'price_source' => 'eve_average',
-                    'settings' => $settings,
-                ]);
-
-                foreach ([
-                    TaxClass::MINERAL => 0.10,
-                    TaxClass::ICE => 0.10,
-                    TaxClass::R4 => 0.10,
-                    TaxClass::R8 => 0.10,
-                    TaxClass::R16 => 0.10,
-                    TaxClass::R32 => 0.10,
-                    TaxClass::R64 => 0.20,
-                    TaxClass::RATTING => 0.08,
-                ] as $taxClass => $rate) {
-                    $ruleSet->rates()->create([
-                        'tax_class' => $taxClass,
-                        'rate' => $rate,
-                    ]);
-                }
-
-                return $ruleSet;
-            });
+            $ruleSet = $rules->createLegacy(
+                name: (string) $this->option('name'),
+                from: $from,
+                to: $to,
+                settings: $settings,
+            );
 
             $this->info("Created rule set #{$ruleSet->id}: {$ruleSet->name}");
             $this->line('Effective from: ' . $from->toDateString());
             $this->line('Effective to: ' . ($to?->toDateString() ?? 'open-ended'));
-            $this->line('Alliances: ' . implode(', ', $alliances));
+            $this->line('Alliances: ' . implode(', ', $settings['alliance_ids']));
             $this->line(
                 'Mineral regions: '
                 . ($settings['mineral_region_ids'] === []
